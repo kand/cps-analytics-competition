@@ -1,7 +1,14 @@
-source('domain/Address.r')
+if(!exists('DomainObject', mode = 'function')) source('domain/DomainObject.r')
+if(!exists('Address', mode = 'function')) source('domain/Address.r')
 
 School <- setRefClass(
+
   'School',
+
+  contains = c(
+    'DomainObject'
+  ),
+
   fields = c(
     id = 'numeric',
     name = 'character',
@@ -22,4 +29,5 @@ School <- setRefClass(
     attendingGrades = 'character',
     programTypes = 'character'
   )
+
 )

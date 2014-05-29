@@ -1,18 +1,25 @@
-install.packages('RCurl')
-install.packages('RJSONIO')
-
-library('bitops')
-library('RCurl')
-library('RJSONIO')
+require('bitops')
+require('RCurl')
+require('RJSONIO')
 
 Neo4j <- setRefClass(
   'Neo4j',
+  
   fields = c(
       host = 'character',
       port = 'numeric'
   ),
+  
   methods = c(
-    doQuery = function(queryString) {
+    
+    initialize = function(host = 'localhost', port = 7474) {
+      
+      host <<- host
+      port <<- port
+      
+    },
+    
+    query = function(queryString) {
 
       h = basicTextGatherer()
       
@@ -24,11 +31,18 @@ Neo4j <- setRefClass(
         verbose = FALSE
       )           
       
-      result <- fromJSON(h$value())
-      data <- data.frame(t(sapply(result$data[[1]][[1]]$data, unlist)))
+      return(fromJSON(h$value()))
       
-      return(data)
+    },
+    
+    queryFrameResults = function(queryString, refClass) {
+
+      results = .self$query(queryString)
+      
+# TODO : add a casting function to domain objects, call it here to build domain object from result
+      #return(data.frame(t(sapply(result$data[[1]][[1]]$data, unlist))))
       
     }
+    
   )
 )
